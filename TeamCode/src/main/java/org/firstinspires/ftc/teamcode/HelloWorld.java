@@ -15,6 +15,7 @@ public class HelloWorld extends LinearOpMode {
         while(opModeIsActive()) {
             boolean buttonA = false;
             if (gamepad1.a) {
+                buttonA = true;
                 telemetry.addData("Game Pad 1, A Button: ", buttonA);
             }
         }
