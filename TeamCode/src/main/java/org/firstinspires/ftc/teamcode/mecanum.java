@@ -12,16 +12,18 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 public class mecanum extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        DcMotor frontLeftMotor = hardwareMap.dcMotor.get("motorFL");
-        DcMotor backLeftMotor = hardwareMap.dcMotor.get("motorBL");
-        DcMotor frontRightMotor = hardwareMap.dcMotor.get("motorFR");
-        DcMotor backRightMotor = hardwareMap.dcMotor.get("motorBR");
+        DcMotor leftFrontDrive  = hardwareMap.get(DcMotor.class, "motorFL");
+        DcMotor rightFrontDrive = hardwareMap.get(DcMotor.class, "motorFR");
+        DcMotor leftBackDrive  = hardwareMap.get(DcMotor.class, "motorBL");
+        DcMotor rightBackDrive = hardwareMap.get(DcMotor.class, "motorBR");
 
-        // Reverse the right side motors. Flip if goes backward.
-        frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        frontLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
+        // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
+        // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
+        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
 
         // Retrieve the IMU from the hardware map
         IMU imu = hardwareMap.get(IMU.class, "imu");
@@ -64,10 +66,10 @@ public class mecanum extends LinearOpMode {
             double frontRightPower = (rotY - rotX - rx) / denominator;
             double backRightPower = (rotY + rotX - rx) / denominator;
 
-            frontLeftMotor.setPower(frontLeftPower);
-            backLeftMotor.setPower(backLeftPower);
-            frontRightMotor.setPower(frontRightPower);
-            backRightMotor.setPower(backRightPower);
+            leftFrontDrive.setPower(frontLeftPower);
+            leftBackDrive.setPower(backLeftPower);
+            rightFrontDrive.setPower(frontRightPower);
+            rightBackDrive.setPower(backRightPower);
         }
     }
 }
