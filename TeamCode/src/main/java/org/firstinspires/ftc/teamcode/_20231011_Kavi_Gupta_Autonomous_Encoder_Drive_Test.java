@@ -29,10 +29,12 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -49,8 +51,7 @@ import java.util.List;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list.
  */
-@TeleOp(name = "Concept: TensorFlow Object Detection", group = "Concept")
-@Disabled
+@Autonomous(name = "Encoder Drive Test 3K TFOD")
 public class _20231011_Kavi_Gupta_Autonomous_Encoder_Drive_Test extends LinearOpMode {
 
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
@@ -75,27 +76,28 @@ public class _20231011_Kavi_Gupta_Autonomous_Encoder_Drive_Test extends LinearOp
     @Override
     public void runOpMode() {
 
-        initTfod();
+        leftFrontDrive  = hardwareMap.get(DcMotor.class, "motorFL");
+        rightFrontDrive = hardwareMap.get(DcMotor.class, "motorFR");
+        leftBackDrive  = hardwareMap.get(DcMotor.class, "motorBL");
+        rightBackDrive = hardwareMap.get(DcMotor.class, "motorBR");
+
+
 
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
 
-        double  drive           = 0;        // Desired forward power/speed (-1 to +1)
-        double  strafe          = 0;        // Desired strafe power/speed (-1 to +1)
-        double  turn            = 0;        // Desired turning power/speed (-1 to +1)
-        leftFrontDrive  = hardwareMap.get(DcMotor.class, "motorFL");
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "motorFR");
-        leftBackDrive  = hardwareMap.get(DcMotor.class, "motorBL");
-        rightBackDrive = hardwareMap.get(DcMotor.class, "motorBR");
-
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        initTfod();
 
+        double  drive           = 0;        // Desired forward power/speed (-1 to +1)
+        double  strafe          = 0;        // Desired strafe power/speed (-1 to +1)
+        double  turn            = 0;        // Desired turning power/speed (-1 to +1)
 
         // Wait for the DS start button to be touched.
         telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
@@ -103,9 +105,11 @@ public class _20231011_Kavi_Gupta_Autonomous_Encoder_Drive_Test extends LinearOp
         telemetry.update();
         waitForStart();
 
-        if (opModeIsActive()) {
-            while (opModeIsActive()) {
 
+        while (opModeIsActive()) {
+            moveRobot(0.5, 2000);
+        }
+                /*
                 telemetryTfod();
 
                 // Push telemetry to the Driver Station.
@@ -118,11 +122,13 @@ public class _20231011_Kavi_Gupta_Autonomous_Encoder_Drive_Test extends LinearOp
                     visionPortal.resumeStreaming();
                 }
 
-                moveRobot(0.5, 2000);
+
 
                 // Share the CPU.
                 sleep(20);
             }
+            */
+
         }
 
         // Save more CPU resources when camera is no longer needed.
