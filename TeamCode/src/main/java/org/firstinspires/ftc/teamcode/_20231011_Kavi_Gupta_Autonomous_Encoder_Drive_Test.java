@@ -132,9 +132,9 @@ public class _20231011_Kavi_Gupta_Autonomous_Encoder_Drive_Test extends LinearOp
         }
 
         // Save more CPU resources when camera is no longer needed.
-        visionPortal.close();
+        //UPDD visionPortal.close();
 
-    }   // end runOpMode()
+   // }   // end runOpMode()
 
     /**
      * Initialize the TensorFlow Object Detection processor.
