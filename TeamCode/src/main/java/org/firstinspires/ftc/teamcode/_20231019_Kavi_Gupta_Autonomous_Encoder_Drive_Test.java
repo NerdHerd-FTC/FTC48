@@ -247,11 +247,8 @@ public class _20231019_Kavi_Gupta_Autonomous_Encoder_Drive_Test extends LinearOp
     }
 
     public void moveForward(double speed, double inches) {
-        int Current_Encoder_Ticks = GetAverageEncoderPositions();
-        double Calculated_Encoder_Ticks = (inches * Ticks_Per_Inch) + Current_Encoder_Ticks;
-        int Rounded_Encoder_Ticks = (int)Math.round(Calculated_Encoder_Ticks);
 
-        ResetEncoders();
+        int Rounded_Encoder_Ticks = calculateTicksForLateralMovement(inches);
 
         SetFrontLeftDriveDirection("forward");
         SetFrontRightDriveDirection("forward");
@@ -278,11 +275,8 @@ public class _20231019_Kavi_Gupta_Autonomous_Encoder_Drive_Test extends LinearOp
     }
 
     public void moveBackward(double speed, double inches) {
-        int Current_Encoder_Ticks = GetAverageEncoderPositions();
-        double Calculated_Encoder_Ticks = (inches * Ticks_Per_Inch) + Current_Encoder_Ticks;
-        int Rounded_Encoder_Ticks = (int)Math.round(Calculated_Encoder_Ticks);
 
-        ResetEncoders();
+        int Rounded_Encoder_Ticks = calculateTicksForLateralMovement(inches);
 
         SetFrontLeftDriveDirection("backward");
         SetFrontRightDriveDirection("backward");
@@ -309,11 +303,8 @@ public class _20231019_Kavi_Gupta_Autonomous_Encoder_Drive_Test extends LinearOp
     }
 
     public void moveLeft(double speed, double inches) {
-        int Current_Encoder_Ticks = GetAverageEncoderPositions();
-        double Calculated_Encoder_Ticks = (inches * Ticks_Per_Inch) + Current_Encoder_Ticks;
-        int Rounded_Encoder_Ticks = (int)Math.round(Calculated_Encoder_Ticks);
 
-        ResetEncoders();
+        int Rounded_Encoder_Ticks = calculateTicksForLateralMovement(inches);
 
         SetFrontLeftDriveDirection("backward");
         SetBackRightDriveDirection("backward");
@@ -330,11 +321,8 @@ public class _20231019_Kavi_Gupta_Autonomous_Encoder_Drive_Test extends LinearOp
     }
 
     public void moveRight(double speed, double inches) {
-        int Current_Encoder_Ticks = GetAverageEncoderPositions();
-        double Calculated_Encoder_Ticks = (inches * Ticks_Per_Inch) + Current_Encoder_Ticks;
-        int Rounded_Encoder_Ticks = (int)Math.round(Calculated_Encoder_Ticks);
 
-        ResetEncoders();
+        int Rounded_Encoder_Ticks = calculateTicksForLateralMovement(inches);
 
         SetFrontRightDriveDirection("backward");
         SetBackLeftDriveDirection("backward");
@@ -354,10 +342,11 @@ public class _20231019_Kavi_Gupta_Autonomous_Encoder_Drive_Test extends LinearOp
 
     public void rotateClockwise(double speed, double steps) {
         int Current_Encoder_Ticks = GetAverageEncoderPositions();
-        double Calculated_Encoder_Ticks = (steps * Ticks_Per_Inch) + Current_Encoder_Ticks;
-        int Rounded_Encoder_Ticks = (int)Math.round(Calculated_Encoder_Ticks);
 
         ResetEncoders();
+
+        double Calculated_Encoder_Ticks = (steps * Ticks_Per_Inch) + Current_Encoder_Ticks;
+        int Rounded_Encoder_Ticks = (int)Math.round(Calculated_Encoder_Ticks);
 
         SetFrontLeftDriveDirection("forward");
         SetFrontRightDriveDirection("backward");
@@ -381,6 +370,16 @@ public class _20231019_Kavi_Gupta_Autonomous_Encoder_Drive_Test extends LinearOp
         rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         motionTelemetry();
+    }
+
+    public int calculateTicksForLateralMovement(double inches) {
+        int Current_Encoder_Ticks = GetAverageEncoderPositions();
+
+        ResetEncoders();
+
+        double Calculated_Encoder_Ticks = (inches * Ticks_Per_Inch) + Current_Encoder_Ticks;
+        int Rounded_Encoder_Ticks = (int)Math.round(Calculated_Encoder_Ticks);
+        return Rounded_Encoder_Ticks;
     }
 
 
