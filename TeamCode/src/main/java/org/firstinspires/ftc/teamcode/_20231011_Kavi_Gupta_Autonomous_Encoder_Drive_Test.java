@@ -76,6 +76,11 @@ public class _20231011_Kavi_Gupta_Autonomous_Encoder_Drive_Test extends LinearOp
     @Override
     public void runOpMode() {
 
+        leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         leftFrontDrive  = hardwareMap.get(DcMotor.class, "motorFL");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "motorFR");
         leftBackDrive  = hardwareMap.get(DcMotor.class, "motorBL");
@@ -93,16 +98,6 @@ public class _20231011_Kavi_Gupta_Autonomous_Encoder_Drive_Test extends LinearOp
         leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        initTfod();
-
-        double  drive           = 0;        // Desired forward power/speed (-1 to +1)
-        double  strafe          = 0;        // Desired strafe power/speed (-1 to +1)
-        double  turn            = 0;        // Desired turning power/speed (-1 to +1)
-
-        // Wait for the DS start button to be touched.
-        telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
-        telemetry.addData(">", "Touch Play to start OpMode");
-        telemetry.update();
         waitForStart();
 
 
@@ -239,6 +234,18 @@ public class _20231011_Kavi_Gupta_Autonomous_Encoder_Drive_Test extends LinearOp
         rightBackDrive.setTargetPosition(ticks);
         rightBackDrive.setPower(speed);
         rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        telemetry.addData("Left Front Target Position", leftFrontDrive.getTargetPosition());
+        telemetry.addData("Left Front Current Position", leftFrontDrive.getCurrentPosition());
+
+        telemetry.addData("Right Front Target Position", rightFrontDrive.getTargetPosition());
+        telemetry.addData("Right Front Current Position", rightFrontDrive.getCurrentPosition());
+
+        telemetry.addData("Left Back Target Position", leftBackDrive.getTargetPosition());
+        telemetry.addData("Left Back Current Position", leftBackDrive.getCurrentPosition());
+
+        telemetry.addData("Right Back Target Position", rightBackDrive.getTargetPosition());
+        telemetry.addData("Right Back Current Position", rightBackDrive.getCurrentPosition());
 
 
         // Normalize wheel powers to be less than 1.0

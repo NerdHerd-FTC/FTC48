@@ -91,10 +91,10 @@ public class _20231019_Kavi_Gupta_Autonomous_Encoder_Drive_Test extends LinearOp
 
         while (opModeIsActive()) {
             moveForward(0.5, 10);
-            moveBackward(0.5, 10);
-            moveLeft(0.5, 10);
-            moveRight(0.5, 10);
-            rotateClockwise(0.5, 3000);
+            //moveBackward(0.5, 10);
+            //moveLeft(0.5, 10);
+            //moveRight(0.5, 10);
+            //rotateClockwise(0.5, 3000);
         }
                 /*
                 telemetryTfod();
@@ -377,7 +377,7 @@ public class _20231019_Kavi_Gupta_Autonomous_Encoder_Drive_Test extends LinearOp
 
         ResetEncoders();
 
-        double Calculated_Encoder_Ticks = (inches * Ticks_Per_Inch) + Current_Encoder_Ticks;
+        double Calculated_Encoder_Ticks = (inches * Ticks_Per_Inch);
         int Rounded_Encoder_Ticks = (int)Math.round(Calculated_Encoder_Ticks);
         return Rounded_Encoder_Ticks;
     }
