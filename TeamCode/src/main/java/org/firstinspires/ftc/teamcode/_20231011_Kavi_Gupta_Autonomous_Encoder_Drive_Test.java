@@ -76,15 +76,15 @@ public class _20231011_Kavi_Gupta_Autonomous_Encoder_Drive_Test extends LinearOp
     @Override
     public void runOpMode() {
 
-        leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
         leftFrontDrive  = hardwareMap.get(DcMotor.class, "motorFL");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "motorFR");
         leftBackDrive  = hardwareMap.get(DcMotor.class, "motorBL");
         rightBackDrive = hardwareMap.get(DcMotor.class, "motorBR");
+
+        leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 
 
@@ -246,6 +246,8 @@ public class _20231011_Kavi_Gupta_Autonomous_Encoder_Drive_Test extends LinearOp
 
         telemetry.addData("Right Back Target Position", rightBackDrive.getTargetPosition());
         telemetry.addData("Right Back Current Position", rightBackDrive.getCurrentPosition());
+
+        telemetry.update();
 
 
         // Normalize wheel powers to be less than 1.0
