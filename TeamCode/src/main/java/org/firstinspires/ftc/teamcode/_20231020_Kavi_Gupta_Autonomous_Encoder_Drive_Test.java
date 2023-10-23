@@ -75,6 +75,8 @@ public class _20231020_Kavi_Gupta_Autonomous_Encoder_Drive_Test extends LinearOp
     private int leftBackDriveTickTracker = 0;
     private int rightBackDriveTickTracker = 0;
 
+    private boolean ended = false;
+
 
 
 
@@ -92,12 +94,25 @@ public class _20231020_Kavi_Gupta_Autonomous_Encoder_Drive_Test extends LinearOp
 
 
         while (opModeIsActive()) {
-            moveForward(0.5, 25);
+            if (moveForward(0.5, 10)) {
+                telemetry.addLine("Ended Confirmed");
+                telemetry.update();
+                moveBackward(0.5,10);
+            };
             //moveBackward(0.5, 10);
             //moveLeft(0.5, 10);
             //moveRight(0.5, 10);
             //rotateClockwise(0.5, 3000);
-            moveRight(0.5, 25);
+            //moveBackward(0.5, 25);
+        }
+    }
+
+
+    public boolean isNotActive() {
+        if (leftFrontDrive.isBusy() && leftBackDrive.isBusy() && rightFrontDrive.isBusy() && rightBackDrive.isBusy()) {
+            return false;
+        } else {
+            return true;
         }
     }
     public void SetFrontLeftDriveDirection(String direction) {
@@ -146,9 +161,12 @@ public class _20231020_Kavi_Gupta_Autonomous_Encoder_Drive_Test extends LinearOp
         rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        telemetry.addLine("Reset");
+        telemetry.update();
     }
 
-    public void moveForward(double speed, double inches) {
+    public boolean moveForward(double speed, double inches) {
 
         int leftFrontDriveNecessaryTicks = calculateTicksForLateralMovement(inches); //2000
         int rightFrontDriveNecessaryTicks = calculateTicksForLateralMovement(inches);
@@ -174,7 +192,12 @@ public class _20231020_Kavi_Gupta_Autonomous_Encoder_Drive_Test extends LinearOp
         SetBackLeftDriveDirection("forward");
         SetBackRightDriveDirection("forward");
 
-        leftFrontDrive.setTargetPosition(leftFrontDrive.getCurrentPosition() + leftFrontDriveTargetTicks);
+        telemetry.addData("Left Front Necessary Ticks", leftFrontDriveNecessaryTicks);
+        telemetry.addData("Right Front Necessary Ticks", rightFrontDriveNecessaryTicks);
+        telemetry.addData("Left Back Necessary Ticks", leftBackDriveNecessaryTicks);
+        telemetry.addData("Right Back Necessary Ticks", rightBackDriveNecessaryTicks);
+
+        leftFrontDrive.setTargetPosition(leftFrontDriveTargetTicks);
         leftFrontDrive.setPower(speed);
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -189,41 +212,76 @@ public class _20231020_Kavi_Gupta_Autonomous_Encoder_Drive_Test extends LinearOp
         rightBackDrive.setTargetPosition(rightBackDriveTargetTicks);
         rightBackDrive.setPower(speed);
         rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        if (leftFrontDriveCurrentTicks - leftFrontDriveTargetTicks <= 5 && leftFrontDriveCurrentTicks - leftFrontDriveTargetTicks >= -5) {
-            ResetEncoders();
-            break;
-        }
-
+        telemetry.addData("Subtraction: ", Math.abs(leftFrontDriveCurrentTicks - leftFrontDriveTargetTicks));
         motionTelemetry();
+
+        if (Math.abs(leftFrontDriveCurrentTicks - leftFrontDriveTargetTicks) <= 10 && leftFrontDriveCurrentTicks - leftFrontDriveTargetTicks >= -10) {
+            telemetry.addLine("Forward Ended");
+            ResetEncoders();
+            return true;
+        } else {
+            telemetry.addLine("Moving Forward");
+            return false;
+        }
     }
 
-    public void moveBackward(double speed, double inches) {
+    public boolean moveBackward(double speed, double inches) {
 
-        int Rounded_Encoder_Ticks = calculateTicksForLateralMovement(inches);
+        int leftFrontDriveNecessaryTicks = calculateTicksForLateralMovement(inches); //2000
+        int rightFrontDriveNecessaryTicks = calculateTicksForLateralMovement(inches);
+        int leftBackDriveNecessaryTicks = calculateTicksForLateralMovement(inches);
+        int rightBackDriveNecessaryTicks = calculateTicksForLateralMovement(inches);
+
+
+        int leftFrontDriveCurrentTicks = leftFrontDrive.getCurrentPosition();
+        int rightFrontDriveCurrentTicks = rightFrontDrive.getCurrentPosition();
+        int leftBackDriveCurrentTicks = leftBackDrive.getCurrentPosition();
+        int rightBackDriveCurrentTicks = rightBackDrive.getCurrentPosition();
+
+        int leftFrontDriveTargetTicks =  leftFrontDriveNecessaryTicks;
+        int rightFrontDriveTargetTicks = rightFrontDriveNecessaryTicks;
+        int leftBackDriveTargetTicks = leftBackDriveNecessaryTicks;
+        int rightBackDriveTargetTicks = rightBackDriveNecessaryTicks;
+
+
+
 
         SetFrontLeftDriveDirection("backward");
         SetFrontRightDriveDirection("backward");
         SetBackLeftDriveDirection("backward");
         SetBackRightDriveDirection("backward");
 
-        leftFrontDrive.setTargetPosition(Rounded_Encoder_Ticks);
+        telemetry.addLine("Moving Backward");
+        telemetry.addData("Left Front Necessary Ticks", leftFrontDriveNecessaryTicks);
+        telemetry.addData("Right Front Necessary Ticks", rightFrontDriveNecessaryTicks);
+        telemetry.addData("Left Back Necessary Ticks", leftBackDriveNecessaryTicks);
+        telemetry.addData("Right Back Necessary Ticks", rightBackDriveNecessaryTicks);
+
+        leftFrontDrive.setTargetPosition(leftFrontDriveTargetTicks);
         leftFrontDrive.setPower(speed);
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        rightFrontDrive.setTargetPosition(Rounded_Encoder_Ticks);
+        rightFrontDrive.setTargetPosition(rightFrontDriveTargetTicks);
         rightFrontDrive.setPower(speed);
         rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        leftBackDrive.setTargetPosition(Rounded_Encoder_Ticks);
+        leftBackDrive.setTargetPosition(leftBackDriveTargetTicks);
         leftBackDrive.setPower(speed);
         leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        rightBackDrive.setTargetPosition(Rounded_Encoder_Ticks);
+        rightBackDrive.setTargetPosition(rightBackDriveTargetTicks);
         rightBackDrive.setPower(speed);
         rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
         motionTelemetry();
+
+        if (leftFrontDriveCurrentTicks - leftFrontDriveTargetTicks <= 5 && leftFrontDriveCurrentTicks - leftFrontDriveTargetTicks >= -5) {
+            telemetry.addLine("Backward Ended");
+            ResetEncoders();
+            return true;
+        } else {
+            telemetry.addLine("Moving Backward");
+            return false;
+        }
     }
 
     public void moveLeft(double speed, double inches) {
