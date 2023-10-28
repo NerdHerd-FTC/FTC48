@@ -73,10 +73,10 @@ public class _20231023_Kavi_Gupta_Ticks_Per_Rotational_Degree_Calibrator extends
 
         while (opModeIsActive()) {
             if (gamepad1.right_bumper) {
-                rotateClockwise(0.5, GetAverageEncoderPositions()+100);
+                rotateClockwise(0.5, leftBackDrive.getCurrentPosition()+100);
             }
             if (gamepad1.left_bumper) {
-                rotateClockwise(0.5, GetAverageEncoderPositions()-100);
+                rotateClockwise(0.5, leftBackDrive.getCurrentPosition()-100);
             }
 
         }
@@ -160,80 +160,6 @@ public class _20231023_Kavi_Gupta_Ticks_Per_Rotational_Degree_Calibrator extends
         rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    //Drive Functions
-    public void moveForward(double speed, double inches) {
-
-        int Rounded_Encoder_Ticks = calculateTicksForLateralMovement(inches);
-
-        SetFrontLeftDriveDirection("forward");
-        SetFrontRightDriveDirection("forward");
-        SetBackLeftDriveDirection("forward");
-        SetBackRightDriveDirection("forward");
-
-        runLeftFrontDrive(speed, Rounded_Encoder_Ticks);
-
-        runRightFrontDrive(speed, Rounded_Encoder_Ticks);
-
-        runLeftBackDrive(speed, Rounded_Encoder_Ticks);
-
-        runRightBackDrive(speed, Rounded_Encoder_Ticks);
-
-        motionTelemetry();
-
-        resetEncoders();
-    }
-
-    public void moveBackward(double speed, double inches) {
-
-        int Rounded_Encoder_Ticks = calculateTicksForLateralMovement(inches);
-
-        SetFrontLeftDriveDirection("backward");
-        SetFrontRightDriveDirection("backward");
-        SetBackLeftDriveDirection("backward");
-        SetBackRightDriveDirection("backward");
-
-        runLeftFrontDrive(speed, Rounded_Encoder_Ticks);
-
-        runRightFrontDrive(speed, Rounded_Encoder_Ticks);
-
-        runLeftBackDrive(speed, Rounded_Encoder_Ticks);
-
-        runRightBackDrive(speed, Rounded_Encoder_Ticks);
-
-        motionTelemetry();
-
-        resetEncoders();
-    }
-
-    public void moveLeft(double speed, double inches) {
-
-        int Rounded_Encoder_Ticks = calculateTicksForLateralMovement(inches);
-
-        SetFrontLeftDriveDirection("backward");
-        SetBackRightDriveDirection("backward");
-
-        runLeftFrontDrive(speed, Rounded_Encoder_Ticks);
-
-        runRightBackDrive(speed, Rounded_Encoder_Ticks);
-
-        motionTelemetry();
-
-        resetEncoders();
-    }
-
-    public void moveRight(double speed, double inches) {
-
-        int Rounded_Encoder_Ticks = calculateTicksForLateralMovement(inches);
-
-        SetFrontRightDriveDirection("backward");
-        SetBackLeftDriveDirection("backward");
-
-        runRightFrontDrive(speed, Rounded_Encoder_Ticks);
-
-        runLeftBackDrive(speed, Rounded_Encoder_Ticks);
-
-        motionTelemetry();
-    }
 
     public void rotateClockwise(double speed, double steps) {
         int Current_Encoder_Ticks = GetAverageEncoderPositions();
@@ -255,16 +181,6 @@ public class _20231023_Kavi_Gupta_Ticks_Per_Rotational_Degree_Calibrator extends
         runRightBackDrive(speed, Rounded_Encoder_Ticks);
 
         motionTelemetry();
-
-        resetEncoders();
-    }
-
-    public int calculateTicksForLateralMovement(double inches) {
-        int Current_Encoder_Ticks = GetAverageEncoderPositions();
-
-        double Calculated_Encoder_Ticks = (inches * Ticks_Per_Inch);
-        int Rounded_Encoder_Ticks = (int)Math.round(Calculated_Encoder_Ticks);
-        return Rounded_Encoder_Ticks;
     }
     public void motionTelemetry() {
         telemetry.addData("Front Left Target Position",leftFrontDrive.getTargetPosition());
