@@ -51,12 +51,12 @@ public class _20231027_cindyTeleOpCode extends LinearOpMode {
         clawLeft.scaleRange(0, 1);
         clawRight.scaleRange(0, 1);
 
-        clawRight.setPosition(0);
-        clawLeft.setPosition(0);
+        //clawRight.setPosition(0);
+        //clawLeft.setPosition(0);
 
         int liftTargetPosition = 5;
-        double openClaw = 0.5;
-        double closeClaw = 0;
+        double openClaw = 0.4; //increase to open more
+        double closeClaw = 0.2; //decrease to close more
 
 
 
