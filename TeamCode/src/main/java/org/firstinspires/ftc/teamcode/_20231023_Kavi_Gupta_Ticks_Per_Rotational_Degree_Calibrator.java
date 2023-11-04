@@ -52,7 +52,7 @@ public class _20231023_Kavi_Gupta_Ticks_Per_Rotational_Degree_Calibrator extends
 
     private double Ticks_Per_Inch = 45.2763982107824;
 
-    private double Ticks_Per_Rotational_Degree = 0;
+    private double Ticks_Per_Rotational_Degree = 12.1111111111;
 
     private double baseAutonomousSpeed = 0.75;
 
@@ -73,10 +73,58 @@ public class _20231023_Kavi_Gupta_Ticks_Per_Rotational_Degree_Calibrator extends
 
         while (opModeIsActive()) {
             if (gamepad1.right_bumper) {
-                rotateClockwise(0.5, leftBackDrive.getCurrentPosition()+100);
+                SetFrontLeftDriveDirection("forward");
+                SetFrontRightDriveDirection("backward");
+                SetBackLeftDriveDirection("forward");
+                SetBackRightDriveDirection("backward");
+
+                int Rounded_Encoder_Ticks = leftBackDrive.getCurrentPosition()+10;
+
+                leftFrontDrive.setTargetPosition(Rounded_Encoder_Ticks);
+                leftFrontDrive.setPower(baseAutonomousSpeed);
+                leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                rightBackDrive.setTargetPosition(Rounded_Encoder_Ticks);
+                rightBackDrive.setPower(baseAutonomousSpeed);
+                rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                leftBackDrive.setTargetPosition(Rounded_Encoder_Ticks);
+                leftBackDrive.setPower(baseAutonomousSpeed);
+                leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                rightFrontDrive.setTargetPosition(Rounded_Encoder_Ticks);
+                rightFrontDrive.setPower(baseAutonomousSpeed);
+                rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                motionTelemetry();
+                telemetry.update();
             }
             if (gamepad1.left_bumper) {
-                rotateClockwise(0.5, leftBackDrive.getCurrentPosition()-100);
+                SetFrontLeftDriveDirection("forward");
+                SetFrontRightDriveDirection("backward");
+                SetBackLeftDriveDirection("forward");
+                SetBackRightDriveDirection("backward");
+
+                int Rounded_Encoder_Ticks = leftBackDrive.getCurrentPosition()-10;
+
+                leftFrontDrive.setTargetPosition(Rounded_Encoder_Ticks);
+                leftFrontDrive.setPower(baseAutonomousSpeed);
+                leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                rightBackDrive.setTargetPosition(Rounded_Encoder_Ticks);
+                rightBackDrive.setPower(baseAutonomousSpeed);
+                rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                leftBackDrive.setTargetPosition(Rounded_Encoder_Ticks);
+                leftBackDrive.setPower(baseAutonomousSpeed);
+                leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                rightFrontDrive.setTargetPosition(Rounded_Encoder_Ticks);
+                rightFrontDrive.setPower(baseAutonomousSpeed);
+                rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                motionTelemetry();
+                telemetry.update();
             }
 
         }

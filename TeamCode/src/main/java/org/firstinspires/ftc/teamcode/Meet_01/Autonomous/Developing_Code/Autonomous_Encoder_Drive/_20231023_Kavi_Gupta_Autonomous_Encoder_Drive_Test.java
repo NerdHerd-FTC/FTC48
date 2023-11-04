@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -41,15 +42,16 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list.
  */
-@Autonomous(name = "Full Encoder Test 10/27")
-public class _20231027_Kavi_Gupta_Autonomous_Encoder_Drive_Test extends LinearOpMode {
+@Autonomous(name = "Full Encoder Test")
+@Disabled
+public class _20231023_Kavi_Gupta_Autonomous_Encoder_Drive_Test extends LinearOpMode {
 
     private DcMotor leftFrontDrive   = null;  //  Used to control the left front drive wheel
     private DcMotor rightFrontDrive  = null;  //  Used to control the right front drive wheel
     private DcMotor leftBackDrive    = null;  //  Used to control the left back drive wheel
     private DcMotor rightBackDrive   = null;  //  Used to control the right back drive wheel
 
-    private int Ticks_Per_Inch = 45;
+    private double Ticks_Per_Inch = 45.2763982107824;
 
     private double Ticks_Per_Rotational_Degree = 50;
 
@@ -60,30 +62,36 @@ public class _20231027_Kavi_Gupta_Autonomous_Encoder_Drive_Test extends LinearOp
     @Override
     public void runOpMode() {
 
-        leftFrontDrive = hardwareMap.get(DcMotor.class, "motorFL");
+        leftFrontDrive  = hardwareMap.get(DcMotor.class, "motorFL");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "motorFR");
-        leftBackDrive = hardwareMap.get(DcMotor.class, "motorBL");
+        leftBackDrive  = hardwareMap.get(DcMotor.class, "motorBL");
         rightBackDrive = hardwareMap.get(DcMotor.class, "motorBR");
 
-        leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        resetEncoders();
 
         waitForStart();
 
 
         if (opModeIsActive()) {
-            int Rounded_Encoder_Ticks = 1000; //calculateTicksForLateralMovement(250);
-
-            runDrives(0.5, 1000, 1000, 1000, 1000);
+            moveForward(baseAutonomousSpeed, 10);
+            while (leftFrontDrive.isBusy() || rightFrontDrive.isBusy() || leftBackDrive.isBusy() || rightBackDrive.isBusy()) {}
+                rightFrontDrive.setPower(0);
+                leftFrontDrive.setPower(0);
+                rightBackDrive.setPower(0);
+                leftBackDrive.setPower(0);
+            }
+            moveBackward(baseAutonomousSpeed, 10);
+        /*
+            moveLeft(baseAutonomousSpeed, 10);
+            moveRight(baseAutonomousSpeed, 10);
+            rotateClockwise(baseAutonomousSpeed, 360);
+            rotateCounterClockwise(baseAutonomousSpeed, 360);
+            strafeForwardLeft(baseAutonomousSpeed, 10);
+            strafeForwardRight(baseAutonomousSpeed, 10);
+            strafeBackwardLeft(baseAutonomousSpeed, 10);
+            strafeBackwardRight(baseAutonomousSpeed, 10);
+            */
         }
-    }
 
     //"Building Blocks" Code
 
@@ -119,40 +127,6 @@ public class _20231027_Kavi_Gupta_Autonomous_Encoder_Drive_Test extends LinearOp
         } else if (direction == "backward") {
             rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
         }
-    }
-
-    public void runDrives(double speed, int frontLeftTicks, int frontRightTicks, int backLeftTicks, int backRightTicks) {
-        leftFrontDrive.setTargetPosition(frontLeftTicks);
-        rightFrontDrive.setTargetPosition(frontRightTicks);
-        leftBackDrive.setTargetPosition(backLeftTicks);
-        rightBackDrive.setTargetPosition(backRightTicks);
-
-        leftFrontDrive.setPower(speed);
-        rightFrontDrive.setPower(speed);
-        leftBackDrive.setPower(speed);
-        rightBackDrive.setPower(speed);
-
-        leftFrontDrive.setMode((DcMotor.RunMode.RUN_TO_POSITION));
-        rightFrontDrive.setMode((DcMotor.RunMode.RUN_TO_POSITION));
-        leftBackDrive.setMode((DcMotor.RunMode.RUN_TO_POSITION));
-        rightBackDrive.setMode((DcMotor.RunMode.RUN_TO_POSITION));
-
-        telemetry.addData("Left Front Target Position", leftFrontDrive.getTargetPosition());
-        telemetry.addData("Left Front Current Position", leftFrontDrive.getCurrentPosition());
-
-        telemetry.addData("Right Front Target Position", rightFrontDrive.getTargetPosition());
-        telemetry.addData("Right Front Current Position", rightFrontDrive.getCurrentPosition());
-
-        telemetry.addData("Left Back Target Position", leftBackDrive.getTargetPosition());
-        telemetry.addData("Left Back Current Position", leftBackDrive.getCurrentPosition());
-
-        telemetry.addData("Right Back Target Position", rightBackDrive.getTargetPosition());
-        telemetry.addData("Right Back Current Position", rightBackDrive.getCurrentPosition());
-
-        telemetry.update();
-
-
-
     }
 
     public void runLeftFrontDrive(double speed, int ticks) {
@@ -198,7 +172,7 @@ public class _20231027_Kavi_Gupta_Autonomous_Encoder_Drive_Test extends LinearOp
     }
 
         //Drive Functions
-    public void moveForward(double speed, int inches) {
+    public void moveForward(double speed, double inches) {
 
         int Rounded_Encoder_Ticks = calculateTicksForLateralMovement(inches);
 
@@ -220,7 +194,7 @@ public class _20231027_Kavi_Gupta_Autonomous_Encoder_Drive_Test extends LinearOp
         //resetEncoders();
     }
 
-    public void moveBackward(double speed, int inches) {
+    public void moveBackward(double speed, double inches) {
 
         int Rounded_Encoder_Ticks = calculateTicksForLateralMovement(inches);
 
@@ -242,7 +216,7 @@ public class _20231027_Kavi_Gupta_Autonomous_Encoder_Drive_Test extends LinearOp
         resetEncoders();
     }
 
-    public void moveLeft(double speed, int inches) {
+    public void moveLeft(double speed, double inches) {
 
         int Rounded_Encoder_Ticks = calculateTicksForLateralMovement(inches);
 
@@ -258,7 +232,7 @@ public class _20231027_Kavi_Gupta_Autonomous_Encoder_Drive_Test extends LinearOp
         resetEncoders();
     }
 
-    public void moveRight(double speed, int inches) {
+    public void moveRight(double speed, double inches) {
 
         int Rounded_Encoder_Ticks = calculateTicksForLateralMovement(inches);
 
@@ -376,12 +350,12 @@ public class _20231027_Kavi_Gupta_Autonomous_Encoder_Drive_Test extends LinearOp
         resetEncoders();
     }
 
-    public int calculateTicksForLateralMovement(int inches) {
+    public int calculateTicksForLateralMovement(double inches) {
         int Current_Encoder_Ticks = GetAverageEncoderPositions();
 
-        int Calculated_Encoder_Ticks = (inches * Ticks_Per_Inch);
+        double Calculated_Encoder_Ticks = (inches * Ticks_Per_Inch);
         int Rounded_Encoder_Ticks = (int)Math.round(Calculated_Encoder_Ticks);
-        return Calculated_Encoder_Ticks;
+        return Rounded_Encoder_Ticks;
     }
 
     public int calculateTicksForDiagonalStrafingMovement(double inches) {

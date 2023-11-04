@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -8,8 +9,9 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-@TeleOp(name = "Default Move Only TeleOp - Working")
-public class mecanum extends LinearOpMode {
+@TeleOp(name = "Drive Only TeleOp Owen's Code")
+@Disabled
+public class _20231028_Drive_Only_Tele_Op_Code extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         DcMotor leftFrontDrive  = hardwareMap.get(DcMotor.class, "motorFL");
@@ -46,6 +48,7 @@ public class mecanum extends LinearOpMode {
             // it can be freely changed based on preference.
             // The equivalent button is start on Xbox-style controllers.
             if (gamepad1.x) {
+                telemetry.addLine("Reset yaw");
                 imu.resetYaw();
             }
 
@@ -70,6 +73,9 @@ public class mecanum extends LinearOpMode {
             leftBackDrive.setPower(backLeftPower);
             rightFrontDrive.setPower(frontRightPower);
             rightBackDrive.setPower(backRightPower);
+
+            telemetry.addData("Heading", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+            telemetry.update();
         }
     }
 }

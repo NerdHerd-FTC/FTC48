@@ -80,7 +80,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 @Autonomous(name="Autonomous Blue", group = "Concept")
-
+@Disabled
 public class AutonomousBlue extends LinearOpMode
 {
     // Adjust these numbers to suit your robot.

@@ -1,7 +1,6 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Meet_01.Tele_Operated.Developing_Code.Arm_And_Claw;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -10,9 +9,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "V1 New Arm Claw w/ Drivebase")
-@Disabled
-public class _20231027_cindyTeleOpCode extends LinearOpMode {
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "V5 Arm Claw")
+public class _2023_10_27_05_Arm_Claw_V5 extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         DcMotor frontLeftMotor = hardwareMap.dcMotor.get("motorFL");
@@ -24,6 +22,7 @@ public class _20231027_cindyTeleOpCode extends LinearOpMode {
         Servo droneServo = hardwareMap.servo.get("drone");
         Servo clawLeft = hardwareMap.servo.get("clawLeft");
         Servo clawRight = hardwareMap.servo.get("clawRight");
+        Servo axle = hardwareMap.servo.get("axle");
 
         frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -48,21 +47,25 @@ public class _20231027_cindyTeleOpCode extends LinearOpMode {
         // Without this, the REV Hub's orientation is assumed to be logo up / USB backward
         imu.initialize(parameters);
         droneServo.scaleRange(0, 1);
-        droneServo.setPosition(0.85);
 
         clawLeft.scaleRange(0, 1);
         clawRight.scaleRange(0, 1);
+        
+        axle.scaleRange(0, 1);
 
         //clawRight.setPosition(0);
         //clawLeft.setPosition(0);
 
-        int liftTargetPosition = 5;
+        int liftTargetPosition = 0;
         double openClaw = 0.4; //increase to open more
         double closeClaw = 0.2; //decrease to close more
 
-
-
         waitForStart();
+
+        axle.setPosition(0.8);
+        droneServo.setPosition(0.7);
+        clawLeft.setPosition(openClaw);
+        clawRight.setPosition(openClaw);
 
         while (opModeIsActive()) {
             //gamepad 1 - drive base
@@ -99,49 +102,75 @@ public class _20231027_cindyTeleOpCode extends LinearOpMode {
             double liftPower = arm.getPower();
 
             if (gamepad1.right_trigger > 0) {
-                liftTargetPosition += 5;
+                liftTargetPosition += 2.5;
             } else if (gamepad1.left_trigger > 0) {
-                liftTargetPosition -= 5;
+                liftTargetPosition -= 2.5;
             }
-            if (liftTargetPosition > 962) {
-                liftTargetPosition = 957;
+            if (liftTargetPosition > 700) {
+                liftTargetPosition = 695;
             }
-            if (liftTargetPosition < 0) {
+            if (liftTargetPosition < 5) {
                 liftTargetPosition = 5;
             }
 
-            arm.setTargetPosition(liftTargetPosition);
-            arm.setPower(1);
-            arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            if (gamepad1.right_bumper) {
+                for (int liftPos = 0; liftPos <= 500; liftPos = liftPos + 4) {
+                    liftTargetPosition = liftPos;
+                    arm.setTargetPosition(liftTargetPosition);
+                    arm.setPower(0.7);
+                    arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    sleep(10);
+                }
+
+                clawLeft.setPosition(openClaw);
+                clawRight.setPosition(openClaw);
+                
+                sleep(300);
+                axle.setPosition(0);
+            }
+            if (gamepad1.left_bumper) {
+                liftTargetPosition = 10;
+                arm.setTargetPosition(liftTargetPosition);
+                arm.setPower(0.05);
+                arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                
+                axle.setPosition(0.8);
+            }
+
+            if (arm.isBusy() == false) {
+                arm.setTargetPosition(liftTargetPosition);
+                arm.setPower(0.7);
+                arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
 
             double clawLeftTarget = 0;
 
-            //wrist code
-
-            if (gamepad1.dpad_down) {
+            if (gamepad1.b) {
                 clawLeft.setPosition(closeClaw);
                 clawRight.setPosition(closeClaw);
-
-
+                axle.setPosition(0.8);
+            }
+            if (gamepad1.a) {
+                clawLeft.setPosition(openClaw);
+                clawRight.setPosition(openClaw);
             }
 
             if (gamepad1.dpad_up) {
-                clawLeft.setPosition(openClaw);
-                clawRight.setPosition(openClaw);
-
+                axle.setPosition(0);
             }
+            if (gamepad1.dpad_down) {
+                axle.setPosition(0.8);
+            }
+
             telemetry.addData("Claw Left Target: ", clawLeftTarget);
             telemetry.addData("Claw Right Target: ", closeClaw);
 
-
-            //drone launcher code
-
             double droneServoPosition = droneServo.getPosition();
 
-            if (gamepad1.a) {
+            if (gamepad1.y) {
                 droneServo.setPosition(1);
                 sleep(1500);
-                droneServo.setPosition(0.85);
+                droneServo.setPosition(0.7);
             }
 
             // ADDED CODE - sends info about current servo position to driver station
@@ -149,13 +178,13 @@ public class _20231027_cindyTeleOpCode extends LinearOpMode {
 
             telemetry.addData("Claw Left Position: ", clawLeft.getPosition());
             telemetry.addData("Claw Right Position: ", clawRight.getPosition());
-            //telemetry.addData("Claw Target: ", claw);555 iirj dc
+
+            telemetry.addData("Axle Position:", axle.getPosition());
 
             telemetry.addData("Arm position: ", arm.getCurrentPosition());
             telemetry.addData("Arm power: ", liftPower);
             telemetry.addData("Arm Target Position Requested: ", liftTargetPosition);
             telemetry.addData("Arm Actual Target Position: ", arm.getTargetPosition());
-
 
             telemetry.update();
         }
