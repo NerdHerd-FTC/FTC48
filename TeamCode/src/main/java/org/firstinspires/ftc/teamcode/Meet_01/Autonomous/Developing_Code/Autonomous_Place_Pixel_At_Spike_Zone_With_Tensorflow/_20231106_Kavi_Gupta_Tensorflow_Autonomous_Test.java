@@ -43,7 +43,6 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 
 import java.util.List;
-import java.util.Optional;
 
 /*
  * This OpMode illustrates the basics of TensorFlow Object Detection,
@@ -52,8 +51,8 @@ import java.util.Optional;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list.
  */
-@Autonomous(name = "Autonomous Code For Spike Zone & Parking Forward Left")
-public class _20231028_Kavi_Gupta_Tensorflow_Autonomous_Test extends LinearOpMode {
+@Autonomous(name = "Autonomous Code For Spike Zone & Parking Forward Left v2")
+public class _20231106_Kavi_Gupta_Tensorflow_Autonomous_Test extends LinearOpMode {
 
     private DcMotor leftFrontDrive   = null;  //  Used to control the left front drive wheel
     private DcMotor rightFrontDrive  = null;  //  Used to control the right front drive wheel
@@ -580,7 +579,7 @@ public class _20231028_Kavi_Gupta_Tensorflow_Autonomous_Test extends LinearOpMod
         visionPortal = builder.build();
 
         // Set confidence threshold for TFOD recognitions, at any time.
-        tfod.setMinResultConfidence(0.70f);
+        tfod.setMinResultConfidence(0.80f);
 
         // Disable or re-enable the TFOD processor at any time.
         //visionPortal.setProcessorEnabled(tfod, true);
@@ -589,6 +588,12 @@ public class _20231028_Kavi_Gupta_Tensorflow_Autonomous_Test extends LinearOpMod
 
     //Tensorflow
     public boolean detectProps() {
+        int detectTime = 3000;
+        int actualTime = 0;
+
+        while (detectTime > actualTime) {
+
+        }
 
         List<Recognition> currentRecognitions = tfod.getRecognitions();
         telemetry.addData("# Objects Detected", currentRecognitions.size());

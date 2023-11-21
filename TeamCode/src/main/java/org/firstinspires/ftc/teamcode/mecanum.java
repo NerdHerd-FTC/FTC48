@@ -12,10 +12,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 public class mecanum extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        DcMotor leftFrontDrive  = hardwareMap.get(DcMotor.class, "motorFL");
-        DcMotor rightFrontDrive = hardwareMap.get(DcMotor.class, "motorFR");
-        DcMotor leftBackDrive  = hardwareMap.get(DcMotor.class, "motorBL");
-        DcMotor rightBackDrive = hardwareMap.get(DcMotor.class, "motorBR");
+        DcMotor leftFrontDrive  = hardwareMap.get(DcMotor.class, "leftFrontDrive");
+        DcMotor rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFrontDrive");
+        DcMotor leftBackDrive  = hardwareMap.get(DcMotor.class, "leftBackDrive");
+        DcMotor rightBackDrive = hardwareMap.get(DcMotor.class, "rightBackDrive");
+
+
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
