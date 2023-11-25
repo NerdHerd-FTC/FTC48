@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -7,7 +8,9 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.opencv.core.Mat;
 
-@Autonomous
+import java.util.List;
+
+@Autonomous(name = "Back Board Right Side V1")
 public class _20231121_Back_Board_Right_Side_Parking extends LinearOpMode {
 
     private DcMotor frontLeftMotor = null;
@@ -19,8 +22,10 @@ public class _20231121_Back_Board_Right_Side_Parking extends LinearOpMode {
     private DcMotor leftOdometryPod = null;
     private DcMotor backOdometryPod = null;
 
-    double speed = 0.25;
-    double distanceToTargetForDecceleration = 0.5;
+    int loop = 0;
+
+    double speed = 0.50;
+    double distanceToTargetForDecceleration = 0;
 
     int rightOdometryPodTicks = 0;
     int leftOdometryPodTicks = 0;
@@ -31,6 +36,8 @@ public class _20231121_Back_Board_Right_Side_Parking extends LinearOpMode {
     double backOdometryPodInches = 0;
 
     double robotHeading = 0;
+
+    List<LynxModule> allHubs = null;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -59,10 +66,17 @@ public class _20231121_Back_Board_Right_Side_Parking extends LinearOpMode {
 
         waitForStart();
 
-         //double throttleCounter = 0;
+        allHubs = hardwareMap.getAll(LynxModule.class);
+
+        for (LynxModule hub : allHubs) {
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+        }
 
         if (opModeIsActive()) {
-            moveForward(speed, 10);
+            moveForward(speed, 24);
+            telemetry.addData("Measured Distance at End: ", calculateOdometryInches(rightOdometryPod.getCurrentPosition()));
+            telemetry.update();
+            sleep(5000);
         }
     }
 
@@ -82,7 +96,8 @@ public class _20231121_Back_Board_Right_Side_Parking extends LinearOpMode {
     }
 
     public double calculateOdometryInches(int odometryTickMeasurement) {
-        double odometryInchMeasurement = (odometryTickMeasurement/2000) * (2 * Math.PI * 0.944882);
+        double odometryTickMeasurementDecimal = Double.valueOf(odometryTickMeasurement);
+        double odometryInchMeasurement = (odometryTickMeasurementDecimal/2000) * (2 * Math.PI * 0.944882); //1.889764
         return odometryInchMeasurement;
     }
 
@@ -117,6 +132,21 @@ public class _20231121_Back_Board_Right_Side_Parking extends LinearOpMode {
             backRightMotor.setDirection(DcMotor.Direction.REVERSE);
         }
     }
+    public void update() {
+        for (LynxModule hub : allHubs) {
+            hub.clearBulkCache();
+        }
+
+        rightOdometryPodTicks = rightOdometryPod.getCurrentPosition();
+        leftOdometryPodTicks = leftOdometryPod.getCurrentPosition();
+        backOdometryPodTicks = backOdometryPod.getCurrentPosition();
+
+        rightOdometryPodInches = calculateOdometryInches(rightOdometryPodTicks);
+        leftOdometryPodInches= calculateOdometryInches(leftOdometryPodTicks);
+        backOdometryPodInches = calculateOdometryInches(backOdometryPodTicks);
+
+        loop = loop+1;
+    }
     //Drive Functions
     public void moveForward(double speed, int inches) {
 
@@ -125,15 +155,18 @@ public class _20231121_Back_Board_Right_Side_Parking extends LinearOpMode {
         SetBackLeftDriveDirection("forward");
         SetBackRightDriveDirection("forward");
 
+        frontRightMotor.setPower(speed);
+        frontLeftMotor.setPower(speed);
+        backRightMotor.setPower(speed);
+        backLeftMotor.setPower(speed);
+
+        loop = 0;
+
         while (true) {
 
-            rightOdometryPodTicks = rightOdometryPod.getCurrentPosition();
-            leftOdometryPodTicks = leftOdometryPod.getCurrentPosition();
-            backOdometryPodTicks = backOdometryPod.getCurrentPosition();
+            update();
 
-            rightOdometryPodInches = calculateOdometryInches(rightOdometryPodTicks);
-            leftOdometryPodInches= calculateOdometryInches(leftOdometryPodTicks);
-            backOdometryPodInches = calculateOdometryInches(backOdometryPodTicks);
+            telemetry.addData("Loop: ", loop);
 
             telemetry.addData("Right Odometry Pod Measurement: ", "%d ticks", rightOdometryPodTicks);
             telemetry.addData("Left Odometry Pod Measurement: ", "%d ticks", leftOdometryPodTicks);
@@ -143,22 +176,24 @@ public class _20231121_Back_Board_Right_Side_Parking extends LinearOpMode {
             telemetry.addData("Left Odometry Pod Inch: ", "%f inches", leftOdometryPodInches);
             telemetry.addData("Back Odometry Pod Inch: ", "%f inches", backOdometryPodInches);
 
-            telemetry.update();
-
             double odometryReadingAverage = (rightOdometryPodInches + leftOdometryPodInches)/2;
+
+            telemetry.addData("Odometry Reading Average: ", odometryReadingAverage);
+            telemetry.addData("Target Inches: ", inches);
+            telemetry.addData("Speed: ", speed);
+            telemetry.addData("Distance To Target For Decceleration: ", distanceToTargetForDecceleration);
+
+            telemetry.update();
 
 
             if (odometryReadingAverage < (inches-distanceToTargetForDecceleration)) {
-                frontRightMotor.setPower(speed);
-                frontLeftMotor.setPower(speed);
-                backRightMotor.setPower(speed);
-                backLeftMotor.setPower(speed);
+
             } else {
                 frontRightMotor.setPower(0);
                 frontLeftMotor.setPower(0);
                 backRightMotor.setPower(0);
                 backLeftMotor.setPower(0);
-                sleep(10000);
+                sleep(15000);
                 break;
             }
 

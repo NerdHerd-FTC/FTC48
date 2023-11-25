@@ -119,7 +119,8 @@ public class _2023111701_Odometry_Pod_Test_Code extends LinearOpMode {
     }
 
     public double calculateOdometryInches(int odometryTickMeasurement) {
-        double odometryInchMeasurement = (odometryTickMeasurement/2000) * (2 * Math.PI * 0.944882);
+        double odometryTickMeasurementDecimal = Double.valueOf(odometryTickMeasurement);
+        double odometryInchMeasurement = (odometryTickMeasurementDecimal/2000) * (2 * Math.PI * 0.944882);
         return odometryInchMeasurement;
     }
 }
