@@ -46,8 +46,8 @@ public class DriveConstants {
      * convenience. Make sure to exclude any gear ratio included in MOTOR_CONFIG from GEAR_RATIO.
      */
     public static double WHEEL_RADIUS = 1.8898; // in
-    public static double GEAR_RATIO = 19.2; // output (wheel) speed / input (motor) speed
-    public static double TRACK_WIDTH = 16; // in
+    public static double GEAR_RATIO = 1; // output (wheel) speed / input (motor) speed
+    public static double TRACK_WIDTH = 16.3; // in
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -55,9 +55,9 @@ public class DriveConstants {
      * motor encoders or have elected not to use them for velocity control, these values should be
      * empirically tuned.
      */
-    public static double kV = 1.0 / rpmToVelocity(MAX_RPM);
-    public static double kA = 0;
-    public static double kStatic = 0;
+    public static double kV = 0.01487;
+    public static double kA = 0.00001;
+    public static double kStatic = 0.05331;
 
     /*
      * These values are used to generate the trajectories for you robot. To ensure proper operation,
@@ -99,8 +99,8 @@ public class DriveConstants {
      * https://github.com/acmerobotics/road-runner-quickstart/issues/91
 
      */
-    public static double MAX_VEL = 90;
-    public static double MAX_ACCEL = 90;
+    public static double MAX_VEL = 35;
+    public static double MAX_ACCEL = 35;
     public static double MAX_ANG_VEL = Math.toRadians(322.28875976108804);
     public static double MAX_ANG_ACCEL = Math.toRadians(322.28875976108804);
 
