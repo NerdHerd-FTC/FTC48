@@ -212,6 +212,8 @@ public class _20231216_BLUE_DriverOriented_NoToggles extends LinearOpMode {
             telemetry.addData("Top Claw Position: ", Claw.Claw_Top_Finger.getPosition());
             telemetry.addData("Bottom Claw Position: ", Claw.Claw_Bottom_Finger.getPosition());
             telemetry.addData("Drone Launcher Position: ", DroneLauncher.DroneLauncherServo.getPosition());
+            telemetry.addLine("");
+            telemetry.addLine("Genshin UID: 642041765");
             telemetry.update();
         }
     }
